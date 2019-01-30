@@ -43,7 +43,7 @@ void disk::Init()//初始化
     //清空用以計算消除的陣列
     for (i = 0; i < size_x; i++)
         for (j = 0; j < size_y; j++)
-        meetbead[i][j] = 0;
+            meetbead[i][j] = 0;
 
     //重置combo計數
     combo = 0;
