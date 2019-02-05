@@ -1,6 +1,5 @@
 #include <cstdlib>
 #include <iostream>
-
 #define size_x 6
 #define size_y 5
 
@@ -9,143 +8,152 @@ using namespace std;
 class disk
 {
   private:
-    //ç‰ˆé¢
+    //ª©­±
     //sizey + 1 = buffer
-    int bead[size_x][size_y + 1];
+    int bead[size_y + 1][size_x];
 
-    //é è¨­10Cç‰ˆé¢
-    int demo[size_x][size_y + 1] = {{1,1,1,4,5,0},{4,5,2,2,2,0},{4,5,1,1,1,0},{3,3,3,5,4,0},{5,4,2,2,2,0},{5,4,3,3,3,0}};
+    //¹w³]10Cª©­±
+    int demo[size_y + 1][size_x] = {{1, 4, 4, 3, 5, 5}, {1, 5, 5, 3, 4, 4}, {1, 2, 1, 3, 2, 3}, {4, 2, 1, 5, 2, 3}, {5, 2, 1, 4, 2, 3}, {0, 0, 0, 0, 0, 0}};
 
-    //ç”¨ä»¥è¨ˆç®—æ¶ˆé™¤comboçš„é™£åˆ—
-    int meetbead[size_x][size_y];
+    //¥Î¥H­pºâ®ø°£comboªº°}¦C
+    int meetbead[size_y][size_x];
+
+    // display string
+    string beadBacisStyle[7] = {" ", "¡¹", "¡¸", "¡½", "¡¼", "¡¶", "?"};
+    string beadBigStyle1[7] = {"      ", "  ¡½¡½  ", "  ¡½¡½  ", "¡½¡½  ¡½¡½", "  ¡½¡½  ", "   ¡½¡½ ", " ¡½  ¡½ "};
+    string beadBigStyle2[7] = {"      ", " ¡½¡½¡½¡½ ", "¡½ ¡½¡½ ¡½", "  ¡½¡½  ", "¡½¡½¡½¡½¡½¡½", "  ¡½¡½  ", "¡½¡½¡½¡½¡½¡½"};
+    string beadBigStyle3[7] = {"      ", "¡½¡½¡½¡½¡½¡½", " ¡½¡½¡½¡½ ", "¡½¡½  ¡½¡½", "  ¡½¡½  ", "   ¡½¡½ ", "  ¡½¡½  "};
 
     //counter
-    int i, j, k, x, y; 
+    int i, j, k, x, y;
     int combo;
     bool meet;
 
   public:
-    void Init();//åˆå§‹åŒ–
-    void Play();//çµ±æ•´ä¸€æ¬¡è¨ˆç®—é€±æœŸ
-    void Meet();//æ¶ˆé™¤åˆ¤å®š
-    void Combo();//comboè¨ˆç®—
-    void Drop();//ç å­è‡ªç”±è½ä¸‹
-    void Rand();//éš¨æ©Ÿäº‚æ•¸è½ç  ç›®å‰è¦åŠƒæ˜¯ä¸è€ƒæ…®è½ç 
-    void Display();//å°å‡ºç›®å‰ç‰ˆé¢ ä»¥åŠcomboæ•¸
+    void Init();    //ªì©l¤Æ
+    void Play();    //²Î¾ã¤@¦¸­pºâ¶g´Á
+    void Meet();    //®ø°£§P©w
+    void Combo();   //combo­pºâ
+    void Drop();    //¯]¤l¦Û¥Ñ¸¨¤U
+    void Rand();    //ÀH¾÷¶Ã¼Æ¸¨¯] ¥Ø«e³W¹º¬O¤£¦Ò¼{¸¨¯]
+    void Display(); //¦L¥X¥Ø«eª©­± ¥H¤Îcombo¼Æ
 };
-void disk::Init()//åˆå§‹åŒ–
+void disk::Init() //ªì©l¤Æ
 {
-    //æš«æ™‚é è¨­ä½¿ç”¨demoç‰ˆé¢ æœªä¾†å°‡å¯ä»¥è¨­å®šç‰ˆé¢
-    for (i = 0; i < size_x; i++)
-        for (j = 0; j < size_y + 1; j++)
-            bead[i][j] = demo[i][j];
+    //¼È®É¹w³]¨Ï¥Îdemoª©­± ¥¼¨Ó±N¥i¥H³]©wª©­±
+    for (j = 0; j < size_y + 1; j++)
+        for (i = 0; i < size_x; i++)
+            bead[j][i] = demo[j][i];
 
-    //æ¸…ç©ºç”¨ä»¥è¨ˆç®—æ¶ˆé™¤çš„é™£åˆ—
-    for (i = 0; i < size_x; i++)
-        for (j = 0; j < size_y; j++)
-            meetbead[i][j] = 0;
-
-    //é‡ç½®comboè¨ˆæ•¸
+    //²MªÅ¥Î¥H­pºâ®ø°£ªº°}¦C
+    for (j = 0; j < size_y; j++)
+        for (i = 0; i < size_x; i++)
+            meetbead[j][i] = 0;
+    cout << "Init_complete" << endl;
+    //­«¸mcombo­p¼Æ
     combo = 0;
-
-    cout << "\nInit";
-    Display();
-}//end Init
+} //end Init
 void disk::Play()
 {
-    Init();//åˆå§‹åŒ–
-    Meet();//æ¶ˆé™¤
-    while (meet)//æœ‰æ¶ˆé™¤
+    Init(); //ªì©l¤Æ
+    Display();
+    _sleep(1000);
+    Meet(); //®ø°£
+    Display();
+    _sleep(1000);
+    while (meet) //¦³®ø°£
     {
-        Drop();//è½ç 
-        Meet();//æ¶ˆé™¤
+        Drop(); //¸¨¯]
+        Display();
+        _sleep(1000);
+        Meet(); //®ø°£
     }
-}//end Play
+} //end Play
 void disk::Meet()
 {
     meet = 0;
-    //ç›®å‰æƒ³åˆ°ä»¥ä¸‹é€™ç¨®å¯«æ³• æœƒå­˜å–åˆ°bead[-1][-1]åˆ°bead[6][6]çš„éƒ¨åˆ† é‚è¼¯ä¸Šä¾†èªªæ˜¯ä¸å…è¨±çš„ ä¸éå°±å…ˆæš«ä¸”æ”¾ç½®
-    //æƒ³åˆ°çš„è§£æ±ºè¾¦æ³•æ˜¯æ‹†åˆ†ç›´å‘æ¶ˆé™¤ä»¥åŠç¸±å‘æ¶ˆé™¤ å¯«åœ¨å…©å€‹åˆ†é–‹çš„é›™é‡forå…§
-    //ä¸¦ä¸” åœ¨æ¶ˆé™¤çš„éƒ¨åˆ†æœ‰é‚è¼¯éŒ¯èª¤ è¦åœ¨æœªä¾†åšä¿®æ­£
+    //¾î
+    for (j = 0; j < size_y; j++)
+        for (i = 0; i < size_x - 2; i++)
+            if (bead[j][i] > 0)
+                if (bead[j][i] == bead[j][i + 1] && bead[j][i] == bead[j][i + 2])
+                {
+                    meet = 1;
+                    meetbead[j][i] = bead[j][i] - 6;
+                    for (k = 0; k < size_x; k++)
+                        if (meetbead[j][k + 1] < 0 || meetbead[j][k - 1] < 0)
+                            if (bead[j][k] == bead[j][i])
+                                meetbead[j][k] = bead[j][k] - 6;
+                }
+    //ª½
     for (i = 0; i < size_x; i++)
-        for (j = 0; j < size_y; j++)
-            if (bead[i][j] > 0)//ç­‰æ–¼0ç‚ºç©ºä¹
-            {
-                if (bead[i][j] == bead[i][j + 1] && bead[i][j] == bead[i][j - 1])//è‹¥æ‰¾åˆ°ä¸‰é€£
+        for (j = 0; j < size_y - 2; j++)
+            if (bead[j][i] > 0)
+                if (bead[j][i] == bead[j + 1][i] && bead[j][i] == bead[j + 2][i])
                 {
                     meet = 1;
-                    for (k = 0; k < size_y; k++)//å°‡æ­¤ç›´æ’çš„åŒå±¬ç æ¶ˆé™¤ é‚è¼¯éŒ¯èª¤ éœ€è¦åˆ¤æ–·æ˜¯å¦ç›¸é€£
-                        if (bead[i][k] == bead[i][j])
-                            meetbead[i][k] = bead[i][j] - 6;
+                    meetbead[j][i] = bead[j][i] - 6;
+                    for (k = 0; k < size_y; k++)
+                        if (meetbead[k + 1][i] < 0 || meetbead[k - 1][i] < 0)
+                            if (bead[k][i] == bead[j][i])
+                                meetbead[k][i] = bead[k][i] - 6;
                 }
-                if (bead[i][j] == bead[i + 1][j] && bead[i][j] == bead[i - 1][j])
-                {
-                    meet = 1;
-                    for (k = 0; k < size_x; k++)//å°‡æ­¤ç›´æ’çš„åŒå±¬ç æ¶ˆé™¤ é‚è¼¯éŒ¯èª¤ éœ€è¦åˆ¤æ–·æ˜¯å¦ç›¸é€£
-                        if (bead[k][j] == bead[i][j])
-                            meetbead[k][j] = bead[i][j] - 6;
-                }
-            }
-    cout << "\nMeet";
-    Display();
     if (meet)
         Combo();
-}//end Meet
+} //end Meet
 void disk::Combo()
 {
-    for (i = 0; i < size_x; i++)
-        for (j = 0; j < size_y; j++)
-            if (meetbead[i][j] < 0)
+    for (j = 0; j < size_y; j++)
+        for (i = 0; i < size_x; i++)
+            if (meetbead[j][i] < 0)
             {
                 combo++;
-                meetbead[i][j] = combo;
+                meetbead[j][i] = combo;
                 for (x = 0; x < size_x; x++)
                     for (y = 0; y < size_y; y++)
-                        if (bead[x][y] == bead[i][j] && meetbead[x][y] < 0)
+                        if (bead[y][x] == bead[j][i] && meetbead[y][x] < 0)
                         {
-                            if (meetbead[x + 1][y] == combo)
-                                meetbead[x][y] = combo;
-                            if (meetbead[x - 1][y] == combo)
-                                meetbead[x][y] = combo;
-                            if (meetbead[x][y + 1] == combo)
-                                meetbead[x][y] = combo;
-                            if (meetbead[x][y - 1] == combo)
-                                meetbead[x][y] = combo;
+                            if (meetbead[y + 1][x] == combo)
+                                meetbead[y][x] = combo;
+                            if (meetbead[y - 1][x] == combo)
+                                meetbead[y][x] = combo;
+                            if (meetbead[y][x + 1] == combo)
+                                meetbead[y][x] = combo;
+                            if (meetbead[y][x - 1] == combo)
+                                meetbead[y][x] = combo;
                         }
             }
-    for (i = 0; i < size_x; i++)
-        for (j = 0; j < size_y; j++)
-            if (meetbead[i][j] != 0)
+    for (j = 0; j < size_y; j++)
+        for (i = 0; i < size_x; i++)
+            if (meetbead[j][i] != 0)
             {
-                bead[i][j] = -1;
-                meetbead[i][j] = 0;
+                bead[j][i] = -1;
+                meetbead[j][i] = 0;
             }
-    cout << "\nCombo";
-    Display();
 }
 void disk::Drop() //complete
 {
     for (i = 0; i < size_x; i++)
         for (j = 0; j < size_y; j++)
-            if (bead[i][j] == -1)
+            if (bead[j][i] == -1)
             {
-                Rand();
                 for (k = j; k < 5; k++)
-                    bead[i][k] = bead[i][k + 1];
-                j = -1; //å› ç‚ºæœƒj++ æ‰€ä»¥è¦å¾é ­é–‹å§‹éœ€å…ˆ-1
+                {
+                    bead[k][i] = bead[k + 1][i];
+                    Rand();
+                }
+                j = -1; //¦]¬°·|j++ ©Ò¥H­n±qÀY¶}©l»İ¥ı-1
             }
-    cout << "\nDrop";
-    Display();
 }
 void disk::Rand()
 {
-    bead[i][5] = 0;
+    bead[5][i] = 0;
     //temporarily unavailable
 }
 void disk::Display()
 {
     cout << "\tCombo:" << combo << endl;
-    for (j = size_y - 1; j >= 0; j--)
+    /*for (j = size_y - 1; j >= 0; j--)
     {
         for (i = 0; i < size_x; i++)
             switch (bead[i][j])
@@ -161,7 +169,61 @@ void disk::Display()
                 break;
             }
         cout << endl;
+    }*/
+    for (j = size_y - 1; j >= 0; j--)
+    {
+        for (i = 0; i < size_x; i++)
+        {
+            if (bead[j][i] == -1)
+                cout << " ";
+            else
+                cout << beadBacisStyle[bead[j][i]];
+            cout << ' ';
+        }
+        cout << endl;
     }
+    //----------------------BigStyle----------------------
+    /*for (j = size_y - 1; j >= 0; j--)
+    {
+        for (k = 0; k < 3; k++)
+            switch (k)
+            {
+            case 0:
+                for (i = 0; i < size_x; i++)
+                {
+                    if (bead[j][i] == -1)
+                        cout << "      ";
+                    else
+                        cout << beadBigStyle1[bead[j][i]];
+                    cout << ' ';
+                }
+                cout << endl;
+                break;
+            case 1:
+                for (i = 0; i < size_x; i++)
+                {
+                    if (bead[j][i] == -1)
+                        cout << "      ";
+                    else
+                        cout << beadBigStyle2[bead[j][i]];
+                    cout << ' ';
+                }
+                cout << endl;
+                break;
+            case 2:
+                for (i = 0; i < size_x; i++)
+                {
+                    if (bead[j][i] == -1)
+                        cout << "      ";
+                    else
+                        cout << beadBigStyle3[bead[j][i]];
+                    cout << ' ';
+                }
+                cout << endl;
+                break;
+            }
+        cout << endl;
+    }*/
 }
 int main()
 {
